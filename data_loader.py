@@ -45,25 +45,28 @@ class ImageGenerator(object):
             image2 = np.asarray([image2,image2,image2])
             image2= np.transpose(image2,(1,2,0))
 
-            h,w,_ = image1.shape
-            if h>w:
-                h_start = random.randint(0,h-w-1)
-                image1 = image1[h_start:h_start+w,:,:]
-                image2 = image2[h_start:h_start+w,:,:]
-            elif w>h:
-                w_start = random.randint(0,w-h-1)
-                image1 = image1[w_start:w_start+h,:,:]
-                image2 = image2[w_start:w_start+h,:,:]
-
-            if random.uniform(0,1)<0.5:
-                image1 = cv2.flip(image1,1)
-                image2 = cv2.flip(image2,1)
-
         else:
             image1 = cv2.imread(img_path1.decode()).astype(np.float32)
             image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
 
             image2 = np.zeros(image1.shape).astype(np.float32)
+
+        h, w, _ = image1.shape
+        if h > w:
+            h_start = random.randint(0, h - w - 1)
+            image1 = image1[h_start:h_start + w, :, :]
+            image2 = image2[h_start:h_start + w, :, :]
+        elif w > h:
+            w_start = random.randint(0, w - h - 1)
+            image1 = image1[w_start:w_start + h, :, :]
+            image2 = image2[w_start:w_start + h, :, :]
+
+        image1 = cv2.resize(image1, (self.size, self.size))
+        image2 = cv2.resize(image2, (self.size, self.size))
+
+        if random.uniform(0, 1) < 0.5:
+            image1 = cv2.flip(image1, 1)
+            image2 = cv2.flip(image2, 1)
 
         return image1, image2
 
