@@ -37,13 +37,27 @@ class ImageGenerator(object):
 
     def read_image(self, img_path1):
 
-        if 'style' in img_path1.decode() or 'smooth' in img_path1.decode():
+        if 'flat' in img_path1.decode():
             image1 = cv2.imread(img_path1.decode()).astype(np.float32)
             image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
 
             image2 = cv2.imread(img_path1.decode(),cv2.IMREAD_GRAYSCALE).astype(np.float32)
             image2 = np.asarray([image2,image2,image2])
             image2= np.transpose(image2,(1,2,0))
+
+            h,w,_ = image1.shape
+            if h>w:
+                h_start = random.randint(0,h-w-1)
+                image1 = image1[h_start:h_start+w,:,:]
+                image2 = image2[h_start:h_start+w,:,:]
+            elif w>h:
+                w_start = random.randint(0,w-h-1)
+                image1 = image1[w_start:w_start+h,:,:]
+                image2 = image2[w_start:w_start+h,:,:]
+
+            if random.uniform(0,1)<0.5:
+                image1 = cv2.flip(image1,1)
+                image2 = cv2.flip(image2,1)
 
         else:
             image1 = cv2.imread(img_path1.decode()).astype(np.float32)
