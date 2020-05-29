@@ -11,8 +11,8 @@ def parse_args():
     desc = "Tensorflow implementation of AnimeGAN"
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--phase', type=str, default='train', help='train or test ?')
-    parser.add_argument('--tgt_dataset_name', type=str, default='Hayao', help='dataset_name')
-    parser.add_argument('--src_dataset_name', type=str, default='Hayao', help='dataset_name')
+    parser.add_argument('--tgt_dataset_name', type=str, default='/home/teejs/Documents/Datasets/flat_color', help='dataset_name')
+    parser.add_argument('--src_dataset_name', type=str, default='/home/teejs/Documents/Datasets/whiteBG/color2', help='dataset_name')
 
     parser.add_argument('--epoch', type=int, default=131, help='The number of epochs to run')
     parser.add_argument('--init_epoch', type=int, default=1, help='The number of epochs for weight initialization')
@@ -34,7 +34,7 @@ def parse_args():
     parser.add_argument('--training_rate', type=int, default=1, help='training rate about G & D')
     parser.add_argument('--gan_type', type=str, default='lsgan', help='[gan / lsgan / wgan-gp / wgan-lp / dragan / hinge')
 
-    parser.add_argument('--img_size', type=list, default=[256,256], help='The size of image: H and W')
+    parser.add_argument('--img_size', type=list, default=[512,512], help='The size of image: H and W')
     parser.add_argument('--img_ch', type=int, default=3, help='The size of image channel')
 
     parser.add_argument('--ch', type=int, default=64, help='base channel number per layer')

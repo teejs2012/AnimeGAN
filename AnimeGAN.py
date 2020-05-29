@@ -15,7 +15,9 @@ class AnimeGAN(object) :
         self.checkpoint_dir = args.checkpoint_dir
         self.result_dir = args.result_dir
         self.log_dir = args.log_dir
-        self.dataset_name = args.dataset
+        self.src_dataset_name = args.src_dataset_name
+        self.tgt_dataset_name = args.tgt_dataset_name
+
 
 
         self.epoch = args.epoch
@@ -71,7 +73,7 @@ class AnimeGAN(object) :
         print()
         print("##### Information #####")
         print("# gan type : ", self.gan_type)
-        print("# dataset : ", self.dataset_name)
+        # print("# dataset : ", self.dataset_name)
         print("# max dataset number : ", self.dataset_num)
         print("# batch_size : ", self.batch_size)
         print("# epoch : ", self.epoch)
@@ -307,8 +309,7 @@ class AnimeGAN(object) :
     @property
     def model_dir(self):
 
-        return "{}_{}_{}_{}_{}_{}_{}_{}".format(self.model_name, self.dataset_name,
-                                                   self.gan_type,
+        return "{}_{}_{}_{}_{}_{}_{}".format(self.model_name,self.gan_type,
                                                    int(self.g_adv_weight), int(self.d_adv_weight), int(self.con_weight), int(self.sty_weight), int(self.color_weight))
 
     def save(self, checkpoint_dir, step):
