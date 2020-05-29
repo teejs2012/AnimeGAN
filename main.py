@@ -11,7 +11,8 @@ def parse_args():
     desc = "Tensorflow implementation of AnimeGAN"
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--phase', type=str, default='train', help='train or test ?')
-    parser.add_argument('--dataset', type=str, default='Hayao', help='dataset_name')
+    parser.add_argument('--tgt_dataset_name', type=str, default='Hayao', help='dataset_name')
+    parser.add_argument('--src_dataset_name', type=str, default='Hayao', help='dataset_name')
 
     parser.add_argument('--epoch', type=int, default=131, help='The number of epochs to run')
     parser.add_argument('--init_epoch', type=int, default=1, help='The number of epochs for weight initialization')

@@ -55,15 +55,15 @@ class AnimeGAN(object) :
 
         self.real = tf.placeholder(tf.float32, [self.batch_size, self.img_size[0], self.img_size[1], self.img_ch], name='real_A')
         self.anime = tf.placeholder(tf.float32, [self.batch_size, self.img_size[0], self.img_size[1], self.img_ch], name='anime_A')
-        self.anime_smooth = tf.placeholder(tf.float32, [self.batch_size, self.img_size[0], self.img_size[1], self.img_ch], name='anime_smooth_A')
+        # self.anime_smooth = tf.placeholder(tf.float32, [self.batch_size, self.img_size[0], self.img_size[1], self.img_ch], name='anime_smooth_A')
         self.test_real = tf.placeholder(tf.float32, [1, None, None, self.img_ch], name='test_real_A')
 
         self.anime_gray = tf.placeholder(tf.float32, [self.batch_size, self.img_size[0], self.img_size[1], self.img_ch],name='anime_B')
 
 
-        self.real_image_generator = ImageGenerator('./dataset/train_photo', self.img_size, self.batch_size)
-        self.anime_image_generator = ImageGenerator('./dataset/{}'.format(self.dataset_name + '/style'), self.img_size, self.batch_size)
-        self.anime_smooth_generator = ImageGenerator('./dataset/{}'.format(self.dataset_name + '/smooth'), self.img_size, self.batch_size)
+        self.real_image_generator = ImageGenerator(self.src_dataset_name, self.img_size, self.batch_size)
+        self.anime_image_generator = ImageGenerator(self.tgt_dataset_name, self.img_size, self.batch_size)
+        # self.anime_smooth_generator = ImageGenerator('./dataset/{}'.format(self.dataset_name + '/smooth'), self.img_size, self.batch_size)
         self.dataset_num = max(self.real_image_generator.num_images, self.anime_image_generator.num_images)
 
         self.vgg = Vgg19()
@@ -143,7 +143,7 @@ class AnimeGAN(object) :
         anime_gray_logit = self.discriminator(self.anime_gray, reuse=True)
 
         generated_logit = self.discriminator(self.generated, reuse=True)
-        smooth_logit = self.discriminator(self.anime_smooth, reuse=True)
+        # smooth_logit = self.discriminator(self.anime_smooth, reuse=True)
 
 
 
@@ -164,7 +164,7 @@ class AnimeGAN(object) :
         t_loss = self.con_weight * c_loss + self.sty_weight * s_loss + color_loss(self.real,self.generated) * self.color_weight
 
         g_loss = self.g_adv_weight * generator_loss(self.gan_type, generated_logit)
-        d_loss = self.d_adv_weight * discriminator_loss(self.gan_type, anime_logit, anime_gray_logit, generated_logit, smooth_logit) + GP
+        d_loss = self.d_adv_weight * discriminator_loss(self.gan_type, anime_logit, anime_gray_logit, generated_logit) + GP
 
 
 
@@ -205,7 +205,7 @@ class AnimeGAN(object) :
         self.writer = tf.summary.FileWriter(self.log_dir + '/' + self.model_dir, self.sess.graph)
 
         """ Input Image"""
-        real_img_op, anime_img_op, anime_smooth_op  = self.real_image_generator.load_images(), self.anime_image_generator.load_images(), self.anime_smooth_generator.load_images()
+        real_img_op, anime_img_op  = self.real_image_generator.load_images(), self.anime_image_generator.load_images()
 
 
         # restore check-point if it exits
@@ -229,13 +229,12 @@ class AnimeGAN(object) :
 
             for idx in range(int(self.dataset_num / self.batch_size)):
 
-                anime, anime_smooth, real = self.sess.run([anime_img_op, anime_smooth_op, real_img_op])
+                anime, real = self.sess.run([anime_img_op, real_img_op])
 
                 train_feed_dict = {
                     self.real:real[0],
                     self.anime:anime[0],
-                    self.anime_gray:anime[1],
-                    self.anime_smooth:anime_smooth[1]
+                    self.anime_gray:anime[1]
                 }
 
                 if epoch < self.init_epoch :

@@ -181,7 +181,7 @@ def L2_loss(x,y):
 def Huber_loss(x,y):
     return tf.losses.huber_loss(x,y)
 
-def discriminator_loss(loss_func, real, gray, fake, real_blur):
+def discriminator_loss(loss_func, real, gray, fake):
     real_loss = 0
     gray_loss = 0
     fake_loss = 0
@@ -192,27 +192,27 @@ def discriminator_loss(loss_func, real, gray, fake, real_blur):
         real_loss = -tf.reduce_mean(real)
         gray_loss = tf.reduce_mean(gray)
         fake_loss = tf.reduce_mean(fake)
-        real_blur_loss = tf.reduce_mean(real_blur)
+        # real_blur_loss = tf.reduce_mean(real_blur)
 
     if loss_func == 'lsgan' :
         real_loss = tf.reduce_mean(tf.square(real - 1.0))
         gray_loss = tf.reduce_mean(tf.square(gray))
         fake_loss = tf.reduce_mean(tf.square(fake))
-        real_blur_loss = tf.reduce_mean(tf.square(real_blur))
+        # real_blur_loss = tf.reduce_mean(tf.square(real_blur))
 
     if loss_func == 'gan' or loss_func == 'dragan' :
         real_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.ones_like(real), logits=real))
         gray_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.zeros_like(gray), logits=gray))
         fake_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.zeros_like(fake), logits=fake))
-        real_blur_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.zeros_like(real_blur), logits=real_blur))
+        # real_blur_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.zeros_like(real_blur), logits=real_blur))
 
     if loss_func == 'hinge':
         real_loss = tf.reduce_mean(relu(1.0 - real))
         gray_loss = tf.reduce_mean(relu(1.0 + gray))
         fake_loss = tf.reduce_mean(relu(1.0 + fake))
-        real_blur_loss = tf.reduce_mean(relu(1.0 + real_blur))
+        # real_blur_loss = tf.reduce_mean(relu(1.0 + real_blur))
 
-    loss = real_loss + fake_loss + real_blur_loss * 0.1 + gray_loss
+    loss = real_loss + fake_loss + gray_loss
 
     return loss
 
